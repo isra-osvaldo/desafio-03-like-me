@@ -4,7 +4,7 @@ import cors from "cors"
 
 
 const app = express()
-const PORT = 4000
+const PORT = 3000
 
 app.use(cors())
 app.use(express.json()) 
