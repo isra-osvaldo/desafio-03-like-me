@@ -10,16 +10,30 @@ app.use(cors())
 app.use(express.json()) 
 
 app.get('/posts', async (req, res) => {
-    const posts = await getPosts()
+    try {
+        const posts = await getPosts()
     res.json(posts)
+    } catch (error) {
+        console.error(`Error al obtener los posts: ${error}`)
+        res.status(500).json({ error: 'Error al obtener los posts' })
+    }
 })
 
 app.post('/posts', async(req, res) => {
-    const { titulo, url, descripcion} = req.body
-    await addPost(titulo, url, descripcion)
-    res.send('Post agregado exitosamente')
-})
+    try {
+        const { titulo, url, descripcion} = req.body
 
+        if (!titulo || !url || !descripcion) {
+            return res.status(400).json({ error: 'Todos los campos son requeridos' })
+        }
+
+        await addPost(titulo, url, descripcion)
+        res.status(201).json({ message: 'Post agregado exitosamente' })
+    } catch (error) {
+        console.error(`Error al agregar el post: ${error}`)
+        res.status(500).json({ error: 'Error al agregar el post' })
+    }
+})
 
 
 app.listen(PORT, () => {
